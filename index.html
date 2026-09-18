@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Private Chat</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#0f172a;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.card{
+width:350px;
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Create Room</h2>
+
+<input id="roomName" placeholder="Room Name">
+<input id="password" placeholder="Password">
+
+<button onclick="createRoom()">Create Room</button>
+
+<hr>
+
+<h2>Join Room</h2>
+
+<input id="joinRoomId" placeholder="Room ID">
+<input id="joinPassword" placeholder="Password">
+
+<button onclick="joinRoom()">Join Room</button>
+
+</div>
+
+<script>
+
+const API="https://chat-with-backend-2.onrender.com";
+
+async function createRoom(){
+
+const roomName=document.getElementById("roomName").value;
+const password=document.getElementById("password").value;
+
+const res=await fetch(API+"/create-room",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+roomName,
+password
+})
+});
+
+const data=await res.json();
+
+location.href=
+`chat.html?room=${data.roomId}&password=${password}`;
+}
+
+function joinRoom(){
+
+const room=document.getElementById("joinRoomId").value;
+const password=document.getElementById("joinPassword").value;
+
+location.href=
+`chat.html?room=${room}&password=${password}`;
+}
+
+</script>
+
+</body>
+</html>
