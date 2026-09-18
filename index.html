@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private Chat</title>
+
+<style>
+body{
+background:#0f172a;
+color:white;
+font-family:Arial,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+.card{
+width:350px;
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+}
+input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+box-sizing:border-box;
+}
+button{
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Create Room</h2>
+
+<input id="roomName" placeholder="Room Name">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="createRoom()">Create Room</button>
+
+<hr>
+
+<h2>Join Room</h2>
+
+<input id="joinRoomId" placeholder="Room ID">
+<input id="joinPassword" type="password" placeholder="Password">
+
+<button onclick="joinRoom()">Join Room</button>
+
+</div>
+
+<script>
+
+const API = "https://chat-with-backend-2.onrender.com";
+
+async function createRoom(){
+
+    const roomName =
+    document.getElementById("roomName").value.trim();
+
+    const password =
+    document.getElementById("password").value.trim();
+
+    if(!roomName || !password){
+        alert("Room Name and Password required");
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            API + "/create-room",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    roomName,
+                    password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if(data.error){
+            alert(data.error);
+            return;
+        }
+
+        window.location.href =
+        `chat.html?room=${data.roomId}&password=${encodeURIComponent(password)}`;
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Backend connection failed.\nCheck Render server."
+        );
+
+    }
+
+}
+
+function joinRoom(){
+
+    const roomId =
+    document.getElementById("joinRoomId").value.trim();
+
+    const password =
+    document.getElementById("joinPassword").value.trim();
+
+    if(!roomId || !password){
+        alert("Room ID and Password required");
+        return;
+    }
+
+    window.location.href =
+    `chat.html?room=${roomId}&password=${encodeURIComponent(password)}`;
+
+}
+
+</script>
+
+</body>
+</html>
